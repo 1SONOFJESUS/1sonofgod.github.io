@@ -1,0 +1,206 @@
+/* HEADER */
+header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 50;
+  background: rgba(8,10,8, .72);
+  backdrop-filter: blur(14px);
+  border-bottom: 1px solid var(--line);
+}
+
+.nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 72px;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.brand .logo-text {
+  font-family: var(--disp);
+  font-size: 22px;
+  font-weight: 900;
+  color: var(--white);
+  letter-spacing: -.02em;
+}
+
+.brand .logo-text span {
+  color: var(--lime);
+}
+
+.brand .logo-sub {
+  font-size: 10px;
+  color: var(--muted);
+  letter-spacing: .15em;
+  text-transform: uppercase;
+  margin-top: -2px;
+}
+
+.menu {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.menu a {
+  font-weight: 600;
+  font-size: 13.5px;
+  color: var(--muted);
+  padding: 9px 13px;
+  border-radius: 8px;
+  transition: .2s;
+  letter-spacing: .01em;
+}
+
+.menu a:hover,
+.menu a.active {
+  color: var(--white);
+}
+
+.menu a.active {
+  color: var(--lime);
+}
+
+.nav-cta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.burger {
+  display: none;
+  flex-direction: column;
+  gap: 5px;
+  background: none;
+  border: 0;
+  cursor: pointer;
+  padding: 8px;
+}
+
+.burger span {
+  width: 24px;
+  height: 2px;
+  background: var(--white);
+  transition: .3s;
+}
+
+/* LOGIN DROPDOWN */
+.login-dropdown {
+  position: relative;
+}
+
+.login-btn {
+  background: var(--anthra);
+  border: 1px solid var(--line2);
+  color: var(--white);
+  padding: 10px 18px;
+  border-radius: 50px;
+  font-family: var(--body);
+  font-weight: 700;
+  font-size: 12.5px;
+  cursor: pointer;
+  transition: .25s;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  text-transform: uppercase;
+  letter-spacing: .02em;
+}
+
+.login-btn:hover {
+  border-color: var(--lime);
+  color: var(--lime);
+}
+
+.login-btn svg {
+  width: 16px;
+  height: 16px;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 2;
+  stroke-linecap: round;
+}
+
+.login-menu {
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  background: var(--anthra2);
+  border: 1px solid var(--line);
+  border-radius: var(--r);
+  padding: 8px;
+  min-width: 220px;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-8px);
+  transition: .25s;
+  z-index: 100;
+}
+
+.login-menu.open {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.login-menu::before {
+  content: "";
+  position: absolute;
+  top: -6px;
+  right: 24px;
+  width: 12px;
+  height: 12px;
+  background: var(--anthra2);
+  border-left: 1px solid var(--line);
+  border-top: 1px solid var(--line);
+  transform: rotate(45deg);
+}
+
+.login-menu a {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  border-radius: var(--rs);
+  color: var(--muted);
+  font-size: 13.5px;
+  font-weight: 600;
+  transition: .2s;
+  margin-bottom: 2px;
+}
+
+.login-menu a:hover {
+  background: rgba(198,242,2, .08);
+  color: var(--lime);
+}
+
+.login-menu a svg {
+  width: 18px;
+  height: 18px;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 2;
+  stroke-linecap: round;
+  flex-shrink: 0;
+}
+
+.login-menu .sep {
+  border-top: 1px solid var(--line);
+  margin: 6px 0;
+}
+
+.login-menu .role-label {
+  font-size: 10px;
+  color: var(--muted2);
+  text-transform: uppercase;
+  letter-spacing: .12em;
+  padding: 6px 14px;
+  font-weight: 700;
+}
