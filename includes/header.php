@@ -2,7 +2,7 @@
 /**
  * Header commun GBÔ AFRICA GROUP
  */
-$siteRoot = '/gbo_africa_group'; // Définir le chemin racine selon votre structure de dossiers
+$siteRoot = '/gbo_africa_group';
 ?>
 <!DOCTYPE html>
 <html lang="fr">
@@ -20,12 +20,14 @@ $siteRoot = '/gbo_africa_group'; // Définir le chemin racine selon votre struct
 <!-- HEADER -->
 <header>
     <div class="wrap nav">
-    <a class="brand" href="<?= $siteRoot ?>/index.php">
-      <div>
-        <div class="logo-text">GBÔ <span>AFRICA</span></div>
-        <div class="logo-sub">GROUP</div>
-      </div>
-    </a>
+        <a class="brand" href="<?= $siteRoot ?>/index.php">
+            <img src="<?= $siteRoot ?>/assets/images/logo.png" alt="GBÔ AFRICA GROUP" class="logo-img" loading="eager" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+            <!-- Fallback texte si l'image ne charge pas -->
+            <span class="logo-fallback" style="display:none;">
+                <span class="logo-text">GBÔ <span>AFRICA</span></span>
+                <span class="logo-sub">GROUP</span>
+            </span>
+        </a>
     <nav class="menu" id="menu">
       <a href="<?= $siteRoot ?>/index.php?page=home">Accueil</a>
       <a href="<?= $siteRoot ?>/index.php?page=fitness">Fitness</a>

@@ -9,14 +9,14 @@ $siteRoot = $siteRoot ?? '/gbo_africa_group';
 <footer><div class="wrap">
   <div class="foot-grid">
     <div>
-      <div class="logo-text" style="font-size:20px;margin-bottom:12px">GBÔ <span style="color:var(--lime)">AFRICA</span></div>
-      <p class="muted" style="font-size:13.5px;max-width:260px">Plus qu'une pratique, un style de vie. L'écosystème africain du sport, du fitness et du bien-être.</p>
+      <img src="<?= $siteRoot ?>/assets/images/logo.png" alt="GBÔ AFRICA GROUP" class="logo-img-footer">
+      <p class="muted" style="font-size:13.5px;max-width:260px;margin-top:12px">Plus qu'une pratique, un style de vie. L'écosystème africain du sport, du fitness et du bien-être.</p>
     </div>
     <div><h5>Services</h5><a href="<?= $siteRoot ?>/index.php?page=fitness" target="_blank">Fitness</a><a href="<?= $siteRoot ?>/index.php?page=coach" target="_blank">Coach</a><a href="<?= $siteRoot ?>/index.php?page=academy" target="_blank">Academy</a><a href="<?= $siteRoot ?>/index.php?page=shop" target="_blank">Shop</a></div>
     <div><h5>Groupe</h5><a href="<?= $siteRoot ?>/index.php?page=apropos" target="_blank">À propos</a><a href="<?= $siteRoot ?>/index.php?page=blog" target="_blank">Blog</a><a href="<?= $siteRoot ?>/index.php?page=contact" target="_blank">Contact</a></div>
     <div><h5>Espaces</h5><a href="<?= $siteRoot ?>/pages/login.php?role=coach" target="_blank">Espace Coach</a><a href="<?= $siteRoot ?>/pages/login.php?role=client" target="_blank">Espace Client</a><a href="<?= $siteRoot ?>/pages/login.php?role=admin" target="_blank">Administration</a></div>
   </div>
-  <div class="foot-bottom"><span>© 2026 GBÔ AFRICA GROUP</span><span>Abidjan, Côte d'Ivoire · contact@gbo-africa.com · 07 88 19 95 42</span></div>
+  <div class="foot-bottom"><span>© 2026 GBÔ AFRICA GROUP</span><span>Abidjan, Côte d'Ivoire · contact@gboafricagroup.com · 07 88 19 95 42</span></div>
 </div></footer>
 
 <script>

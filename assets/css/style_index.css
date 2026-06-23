@@ -149,11 +149,72 @@ header {
   align-items: center;
   justify-content: space-between;
   height: 72px;
+  width: 100%;
 }
 .brand {
   display: flex;
   align-items: center;
-  gap: 12px;
+  justify-content: center;
+  gap: 0;
+  height: 100%;
+  text-decoration: none;
+  flex-shrink: 0;
+}
+
+/* Logo image in header */
+.logo-img {
+  height: 48px;
+  width: auto;
+  max-height: 100%;
+  display: block;
+  object-fit: contain;
+  transition: transform 0.25s ease;
+}
+
+.logo-img:hover {
+  transform: scale(1.05);
+}
+
+/* Logo fallback (texte de secours) */
+.logo-fallback {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  height: 100%;
+}
+
+/* Logo du footer */
+.logo-img-footer {
+  height: 36px;
+  width: auto;
+  display: block;
+  object-fit: contain;
+  transition: transform 0.25s ease;
+}
+
+.logo-img-footer:hover {
+  transform: scale(1.05);
+}
+
+/* Responsive : ajuster la taille du logo sur mobile */
+@media (max-width: 768px) {
+  .logo-img { 
+    height: 40px; 
+  }
+  .logo-img-footer {
+    height: 28px;
+  }
+  .nav {
+    height: 64px; /* Réduire légèrement la hauteur du header sur mobile */
+  }
+}
+
+@media (max-width: 420px) {
+  .logo-img { 
+    height: 30px; 
+  }
 }
 .logo-text,
 .brand .logo-text {
@@ -913,6 +974,45 @@ svg.i { width: 22px; height: 22px; stroke: var(--lime); fill: none; stroke-width
   background: linear-gradient(135deg, rgba(198,242,2,.10), transparent);
   border: 1px solid var(--line);
   border-radius: var(--r);
+}
+
+/* Background image for shop CTA */
+.shop-cta {
+  background: linear-gradient(135deg, rgba(198,242,2,.08), transparent), url('/gbo_africa_group/assets/images/shop.webp');
+  background-size: cover;
+  background-position: center;
+}
+
+/* ===== CTA AVEC IMAGE DE FOND ===== */
+.cta-card {
+  text-align: center;
+  padding: 60px 30px;
+  background: 
+    linear-gradient(135deg, rgba(8,10,8,.85), rgba(8,10,8,.75)),
+    url('/gbo_africa_group/assets/images/sprinter.webp');
+  background-size: cover;
+  background-position: center;
+  border: 1px solid var(--line);
+  border-radius: var(--r);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Overlay lime subtil par-dessus l'image */
+.cta-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(600px 400px at 50% 50%, rgba(198,242,2,.08), transparent 70%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.cta-card h2,
+.cta-card p,
+.cta-card .btn {
+  position: relative;
+  z-index: 1;
 }
 .cta-card h2 {
   font-size: clamp(28px, 4vw, 46px);

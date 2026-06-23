@@ -234,9 +234,10 @@ document.getElementById('presentationVideo').addEventListener('ended', function(
 <section class="cta-section"><div class="wrap">
   <div class="cta-card">
     <h2>Prêt à bouger ?</h2>
-    <p>Réservez votre bilan offert et recevez une offre adaptée à vos objectifs en moins d'une minute.</p>
+    <p>Réservez votre bilan et recevez une offre adaptée à vos objectifs en moins d'une minute.</p>
     <a class="btn btn-primary" href="<?= $siteRoot ?>/index.php?page=fitness">Réserver mon coaching</a>
   </div>
-</div></section>
+  </div>
+</section>
 
 <?php require_once __DIR__ . '/../includes/footer.php'; ?>
