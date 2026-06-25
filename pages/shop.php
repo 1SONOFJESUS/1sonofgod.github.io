@@ -161,8 +161,8 @@ $products = [
 $categories = ['Équipements', 'Textile', 'Accessoires', 'Nutrition'];
 
 // Pagination
-$itemsPerPage = 10;
-$currentPage = isset($_GET['page_num']) ? max(1, intval($_GET['page_num'])) : 1;
+$itemsPerPage = 8;
+$currentPage = isset($_GET['p']) ? max(1, intval($_GET['p'])) : 1;
 $totalItems = count($products);
 $totalPages = ceil($totalItems / $itemsPerPage);
 $offset = ($currentPage - 1) * $itemsPerPage;
@@ -268,22 +268,31 @@ function generateToken() {
         </div>
 
         <!-- Pagination -->
-        <?php if ($totalPages > 1): ?>
+        <?php if ($totalPages > 1): 
+            // Construire l'URL de base en preservant les parametres existants
+            $baseUrl = strtok($_SERVER['REQUEST_URI'], '?');
+            $queryParams = $_GET;
+        ?>
         <div class="pagination">
-            <?php if ($currentPage > 1): ?>
-                <a href="?page_num=<?php echo $currentPage - 1; ?>">←</a>
+            <?php if ($currentPage > 1): 
+                $queryParams['p'] = $currentPage - 1;
+            ?>
+                <a href="<?php echo $baseUrl . '?' . http_build_query($queryParams); ?>">←</a>
             <?php endif; ?>
 
-            <?php for ($i = 1; $i <= $totalPages; $i++): ?>
-                <?php if ($i == $currentPage): ?>
+            <?php for ($i = 1; $i <= $totalPages; $i++): 
+                $queryParams['p'] = $i;
+                if ($i == $currentPage): ?>
                     <span class="current"><?php echo $i; ?></span>
                 <?php else: ?>
-                    <a href="?page_num=<?php echo $i; ?>"><?php echo $i; ?></a>
+                    <a href="<?php echo $baseUrl . '?' . http_build_query($queryParams); ?>"><?php echo $i; ?></a>
                 <?php endif; ?>
             <?php endfor; ?>
 
-            <?php if ($currentPage < $totalPages): ?>
-                <a href="?page_num=<?php echo $currentPage + 1; ?>">→</a>
+            <?php if ($currentPage < $totalPages): 
+                $queryParams['p'] = $currentPage + 1;
+            ?>
+                <a href="<?php echo $baseUrl . '?' . http_build_query($queryParams); ?>">→</a>
             <?php endif; ?>
         </div>
         <?php endif; ?>
