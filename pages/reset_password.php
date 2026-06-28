@@ -14,17 +14,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $email = sanitize($_POST['email']);
         
         // Vérifier si l'email existe
-        $stmt = $pdo->prepare("SELECT id, nom, prenom FROM coachs WHERE email = ? AND statut = 'actif'");
+        $stmt = $pdo->prepare("SELECT id, nom, prenom FROM users WHERE email = ? AND statut = 'active'");
         $stmt->execute([$email]);
-        $coach = $stmt->fetch();
+        $user = $stmt->fetch();
         
-        if ($coach) {
+        if ($user) {
             // Générer token
             $token = bin2hex(random_bytes(32));
             $expires = date('Y-m-d H:i:s', strtotime('+1 hour'));
             
-            $stmt = $pdo->prepare("UPDATE coachs SET reset_token = ?, reset_expires = ? WHERE id = ?");
-            $stmt->execute([$token, $expires, $coach['id']]);
+            $stmt = $pdo->prepare("UPDATE users SET reset_token = ?, reset_expires = ? WHERE id = ?");
+            $stmt->execute([$token, $expires, $user['id']]);
             
             // TODO: Envoyer email avec lien de réinitialisation
             // mail($email, 'Réinitialisation mot de passe GBÔ', "Lien: https://gbo-africa.com/reset_password.php?step=confirm&token=$token");
@@ -42,14 +42,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if (strlen($password) < 8) {
             $error = "Le mot de passe doit contenir au moins 8 caractères.";
         } else {
-            $stmt = $pdo->prepare("SELECT id FROM coachs WHERE reset_token = ? AND reset_expires > NOW()");
+            $stmt = $pdo->prepare("SELECT id FROM users WHERE reset_token = ? AND reset_expires > NOW()");
             $stmt->execute([$token]);
-            $coach = $stmt->fetch();
+            $user = $stmt->fetch();
             
-            if ($coach) {
+            if ($user) {
                 $hash = password_hash($password, PASSWORD_BCRYPT, ['cost' => 12]);
-                $stmt = $pdo->prepare("UPDATE coachs SET password_hash = ?, reset_token = NULL, reset_expires = NULL WHERE id = ?");
-                $stmt->execute([$hash, $coach['id']]);
+                $stmt = $pdo->prepare("UPDATE users SET password_hash = ?, reset_token = NULL, reset_expires = NULL WHERE id = ?");
+                $stmt->execute([$hash, $user['id']]);
                 
                 $step = 'success_reset';
             } else {

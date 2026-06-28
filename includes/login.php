@@ -2,6 +2,7 @@
 require_once __DIR__ . '/config_session.php';
 require_once __DIR__ . '/../config/database.php';
 
+$siteRoot = '/gbo_africa_group';
 $role = $_GET['role'] ?? $_POST['role'] ?? 'client';
 $allowedRoles = ['client', 'coach', 'admin'];
 
@@ -9,15 +10,20 @@ if (!in_array($role, $allowedRoles)) {
     $role = 'client';
 }
 
-// Si déjà connecté avec le bon rôle, rediriger
-if (isset($_SESSION['user_id']) && $_SESSION['role'] === $role) {
-    $redirects = [
-        'admin' => '/gbo_africa_group/pages/dashboard_admin.php',
-        'coach' => '/gbo_africa_group/pages/dashboard_coach.php',
-        'client' => '/gbo_africa_group/pages/dashboard_client.php'
+// Si déjà connecté, rediriger vers le tableau de bord du rôle actif
+if (isset($_SESSION['user_id'])) {
+    $dashboards = [
+        'admin' => $siteRoot . '/pages/admin/dashboard_admin.php',
+        'admin_content' => $siteRoot . '/pages/admin/dashboard_content.php',
+        'coach' => $siteRoot . '/pages/coach/dashboard_coach.php',
+        'client' => $siteRoot . '/pages/client/dashboard_client.php'
     ];
-    header('Location: ' . $redirects[$role]);
-    exit;
+
+    $currentRole = $_SESSION['role'];
+    if (isset($dashboards[$currentRole])) {
+        header('Location: ' . $dashboards[$currentRole]);
+        exit;
+    }
 }
 
 $error = '';
@@ -28,65 +34,74 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $password = $_POST['password'] ?? '';
     $remember = isset($_POST['remember']);
     
-    $table = match($role) {
-        'admin' => 'administrateurs',
-        'coach' => 'coachs',
-        default => 'clients'
+    $expectedRole = match ($role) {
+        'coach' => 'coach',
+        'client' => 'client',
+        default => 'admin',
     };
     
     try {
-        $stmt = $pdo->prepare("SELECT * FROM {$table} WHERE email = ? AND actif = 1 LIMIT 1");
-        $stmt->execute([$email]);
+        if ($expectedRole === 'admin') {
+            $stmt = $pdo->prepare("SELECT * FROM users WHERE email = ? AND role IN ('admin', 'admin_content') AND statut = 'active' LIMIT 1");
+            $stmt->execute([$email]);
+        } else {
+            $stmt = $pdo->prepare("SELECT * FROM users WHERE email = ? AND role = ? AND statut = 'active' LIMIT 1");
+            $stmt->execute([$email, $expectedRole]);
+        }
         $user = $stmt->fetch();
         
-        if ($user && password_verify($password, $user['mot_de_passe'])) {
+        if ($user && password_verify($password, $user['password_hash'])) {
             // Régénération de l'ID de session (sécurité)
             session_regenerate_id(true);
             
             $_SESSION['user_id'] = $user['id'];
-            $_SESSION['role'] = $role;
+            $_SESSION['role'] = $user['role'];
             $_SESSION['email'] = $user['email'];
             $_SESSION['prenom'] = $user['prenom'] ?? $user['nom'] ?? '';
             $_SESSION['nom'] = $user['nom'] ?? '';
             
             // === "SE SOUVENIR DE MOI" ===
             if ($remember) {
-                $token = bin2hex(random_bytes(32));
-                $tokenHash = hash('sha256', $token);
-                $expires = date('Y-m-d H:i:s', strtotime('+30 days'));
-                
-                // Supprimer anciens tokens de cet utilisateur
-                $pdo->prepare("DELETE FROM remember_tokens WHERE user_id = ?")
-                    ->execute([$user['id']]);
-                
-                // Insérer nouveau token
-                $pdo->prepare("
-                    INSERT INTO remember_tokens (user_id, token_hash, expires_at, created_at)
-                    VALUES (?, ?, ?, NOW())
-                ")->execute([$user['id'], $tokenHash, $expires]);
-                
-                setcookie('gbo_remember', $token, [
-                    'expires' => time() + (30 * 24 * 60 * 60),
-                    'path' => '/gbo_africa_group/',
-                    'secure' => isset($_SERVER['HTTPS']),
-                    'httponly' => true,
-                    'samesite' => 'Lax'
-                ]);
+                try {
+                    $token = bin2hex(random_bytes(32));
+                    $tokenHash = hash('sha256', $token);
+                    $expires = date('Y-m-d H:i:s', strtotime('+30 days'));
+                    
+                    // Supprimer anciens tokens de cet utilisateur
+                    $pdo->prepare("DELETE FROM remember_tokens WHERE user_id = ?")
+                        ->execute([$user['id']]);
+                    
+                    // Insérer nouveau token
+                    $pdo->prepare("INSERT INTO remember_tokens (user_id, token_hash, expires_at, created_at) VALUES (?, ?, ?, NOW())")
+                        ->execute([$user['id'], $tokenHash, $expires]);
+                    
+                    setcookie('gbo_remember', $token, [
+                        'expires' => time() + (30 * 24 * 60 * 60),
+                        'path' => '/gbo_africa_group/',
+                        'secure' => isset($_SERVER['HTTPS']),
+                        'httponly' => true,
+                        'samesite' => 'Lax'
+                    ]);
+                } catch (PDOException $e) {
+                    // Si la table remember_tokens n'existe pas, on n'empêche pas la connexion
+                }
             }
             
             // Redirection post-login
             $redirect = $_SESSION['redirect_after_login'] ?? null;
             unset($_SESSION['redirect_after_login']);
             
+            $dashboards = [
+                'admin' => $siteRoot . '/pages/admin/dashboard_admin.php',
+                'admin_content' => $siteRoot . '/pages/admin/dashboard_content.php',
+                'coach' => $siteRoot . '/pages/coach/dashboard_coach.php',
+                'client' => $siteRoot . '/pages/client/dashboard_client.php'
+            ];
+
             if ($redirect) {
                 header("Location: $redirect");
             } else {
-                $dashboards = [
-                    'admin' => '/gbo_africa_group/pages/dashboard_admin.php',
-                    'coach' => '/gbo_africa_group/pages/dashboard_coach.php',
-                    'client' => '/gbo_africa_group/pages/dashboard_client.php'
-                ];
-                header('Location: ' . $dashboards[$role]);
+                header('Location: ' . $dashboards[$user['role']]);
             }
             exit;
             
@@ -103,7 +118,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <head>
     <meta charset="UTF-8">
     <title>Connexion — <?= ucfirst($role) ?> | GBÔ AFRICA GROUP</title>
-    <link rel="stylesheet" href="../assets/css/style_index.css">
+    <link rel="stylesheet" href="<?= $siteRoot ?>/assets/css/style_index.css">
 </head>
 <body class="auth-page">
     <div class="auth-container">

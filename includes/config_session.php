@@ -30,7 +30,7 @@ if (!isset($_SESSION['user_id']) && isset($_COOKIE['gbo_remember'])) {
         $stmt = $pdo->prepare("
             SELECT r.*, u.id as user_id, u.email, u.prenom, u.nom, u.role 
             FROM remember_tokens r
-            JOIN utilisateurs u ON r.user_id = u.id
+            JOIN users u ON r.user_id = u.id
             WHERE r.token_hash = ? AND r.expires_at > NOW()
             LIMIT 1
         ");
@@ -96,9 +96,10 @@ function requireRole(string|array $allowedRoles): void {
     if (!in_array($currentRole, $allowedRoles, true)) {
         // Redirection intelligente selon le rôle réel
         $redirects = [
-            'admin' => '/gbo_africa_group/admin/dashboard.php',
-            'coach' => '/gbo_africa_group/coach/dashboard.php',
-            'client' => '/gbo_africa_group/client/dashboard.php'
+            'admin' => '/gbo_africa_group/pages/admin/dashboard_admin.php',
+            'admin_content' => '/gbo_africa_group/pages/admin/dashboard_content.php',
+            'coach' => '/gbo_africa_group/pages/coach/dashboard_coach.php',
+            'client' => '/gbo_africa_group/pages/client/dashboard_client.php'
         ];
         
         $safeRedirect = $redirects[$currentRole] ?? '/gbo_africa_group/index.php';
